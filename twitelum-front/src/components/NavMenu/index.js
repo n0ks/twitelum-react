@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './navMenu.css'
+import {Link} from 'react-router-dom';
 
 class NavMenu extends Component {
     render() {
@@ -20,7 +21,7 @@ class NavMenu extends Component {
                         <a className="navMenu__link">Hashtags</a>
                     </li>
                     <li className="navMenu__item">
-                        <a className="navMenu__link">Logout</a>
+                        <Link to="/login" className="navMenu__link">Logout</Link>
                     </li>
                 </ul>
             </nav>

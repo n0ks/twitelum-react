@@ -1,33 +1,25 @@
 import React, {Component, Fragment} from 'react';
-import Cabecalho from './components/Cabecalho'
-import NavMenu from './components/NavMenu'
-import Dashboard from './components/Dashboard'
-import Widget from './components/Widget'
-import TrendsArea from './components/TrendsArea'
-import Tweet from './components/Tweet'
+import Cabecalho from '../../components/Cabecalho'
+import NavMenu from '../../components/NavMenu'
+import Dashboard from '../../components/Dashboard'
+import Widget from '../../components/Widget'
+import TrendsArea from '../../components/TrendsArea'
+import Tweet from '../../components/Tweet'
 
-class App extends Component {
-  constructor() {
-    super()
-    this.state = {
-      novoTweet: '',
-      tweets: []
-    }
-    this.adicionaTweet = this
-      .adicionaTweet
-      .bind(this);
+class Home extends Component {
+  state = {
+    novoTweet: '',
+    tweets: []
   }
-
-  adicionaTweet(e) {
+  adicionaTweet = (e) => {
+    console.log(this);
     const novoTweet = this.state.novoTweet;
     e.preventDefault()
     this.setState({
       tweets: [
         novoTweet, ...this.state.tweets
       ]
-    })
-    console.log('teste', this)
-
+    });
   }
 
   render() {
@@ -69,7 +61,10 @@ class App extends Component {
             </Widget>
           </Dashboard>
           <Dashboard posicao="centro">
-            <div className={`${this.state.tweets.length === 0 ? 'tweet__no-tweet' : 'has-tweet' }`}>
+            <div
+              className={`${this.state.tweets.length === 0
+              ? 'tweet__no-tweet'
+              : 'has-tweet'}`}>
               <p>Digite um tweet ☺</p>
             </div>
             <Widget>
@@ -84,10 +79,11 @@ class App extends Component {
               </div>
             </Widget>
           </Dashboard>
+
         </div>
       </Fragment>
     );
   }
 }
 
-export default App;
+export default Home;
