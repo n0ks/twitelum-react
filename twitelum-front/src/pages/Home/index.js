@@ -7,26 +7,52 @@ import TrendsArea from '../../components/TrendsArea'
 import Tweet from '../../components/Tweet'
 
 class Home extends Component {
-  state = {
-    novoTweet: '',
-    tweets: []
+  constructor(props) {
+    console.log("Home Props", props);
+    super();
+
+    this.state = {
+      novoTweet: '',
+      tweets: []
+    }
+    
+
+
   }
+
+  componentDidMount(){
+    fetch(`http://localhost:3001/tweets?X-AUTH-TOKEN=${localStorage.getItem('token')}`)
+    .then(res => res.json())
+    .then(tweetServer => this.setState({tweets: tweetServer}));
+  }
+
   adicionaTweet = (e) => {
-    console.log(this);
-    const novoTweet = this.state.novoTweet;
     e.preventDefault()
-    this.setState({
-      tweets: [
-        novoTweet, ...this.state.tweets
-      ]
-    });
+    const novoTweet = this.state.novoTweet;
+    if (novoTweet) {
+
+      const token = localStorage.getItem('token');
+
+      fetch(`http://localhost:3001/tweets?X-AUTH-TOKEN=${token}`, {
+          method: 'POST',
+          body: JSON.stringify({conteudo: novoTweet})
+        })
+        .then(res => res.json())
+        .then(novoTweetServer => this.setState({
+          tweets: [
+            novoTweetServer, ...this.state.tweets
+          ],
+          novoTweet: ''
+        }))
+
+    }
   }
 
   render() {
     return (
       <Fragment>
         <Cabecalho>
-          <NavMenu usuario="@rodrigomartins"/>
+          <NavMenu usuario={"@rodrigomartins"}/>
         </Cabecalho>
         <div className="container">
           <Dashboard>
@@ -72,10 +98,7 @@ class Home extends Component {
                 {this
                   .state
                   .tweets
-                  .map((tweet, i) => {
-                    console.table(i, tweet);
-                    return <Tweet key={tweet + i} texto={tweet}/>
-                  })}
+                  .map((tweetInfo, i) => <Tweet key={tweetInfo._id} tweetInfo={tweetInfo} texto={tweetInfo.conteudo}/>)}
               </div>
             </Widget>
           </Dashboard>

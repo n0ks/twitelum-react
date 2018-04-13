@@ -10,8 +10,7 @@ a {
   transition: .3s ease-in-out;
 }
 
-button:hover,
-button:focus,
+button:hover
 a:hover,
 a:focus {
   opacity: .5;
@@ -29,7 +28,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background: #e6ecf0;
+  background: #c0deed;
 }
 
 [disabled],

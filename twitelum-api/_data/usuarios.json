@@ -1,5 +1,13 @@
 [
     {
+        "login": "rodrigomartins",
+        "nome": "Rodrigo",
+        "sobrenome": "Martins",
+        "foto": "https://avatarfiles.alphacoders.com/226/22680.jpg",
+        "email": "rodrigocmp29@gmail.com",
+        "senha": "123456"
+    },
+    {
         "login": "omariosouto",
         "nome": "Mario",
         "sobrenome": "Souto",

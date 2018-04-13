@@ -8,6 +8,10 @@ import './loginPage.css'
 
 class LoginPage extends Component {
 
+  state = {
+    errMsg: ''
+  }
+
   fazLogin = (e) => {
 
     e.preventDefault()
@@ -33,7 +37,11 @@ class LoginPage extends Component {
         .props
         .history
         .push('/')
-    }).catch(err => console.log(err));
+    })
+    .catch((err) => err.json()
+    .then(res => {
+      this.setState({errMsg: res.message})
+    }));
   }
 
   render() {
@@ -61,9 +69,12 @@ class LoginPage extends Component {
                   name="senha"
                   ref={(inputSenha) => this.senha = inputSenha}/>
               </div>
-              {/* <div className="loginPage__errorBox">
-                                Mensagem de erro!
-                            </div> */}
+              {this.state.errMsg
+                ? <div className="loginPage__errorBox">
+                    {this.state.errMsg}
+                  </div>
+                : ''
+              }
               <div className="loginPage__inputWrap">
                 <button className="loginPage__btnLogin" type="submit">
                   Logar
@@ -77,4 +88,4 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage
+export default LoginPage;
