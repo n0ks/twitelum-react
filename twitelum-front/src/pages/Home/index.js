@@ -8,22 +8,46 @@ import Tweet from '../../components/Tweet'
 
 class Home extends Component {
   constructor(props) {
-    console.log("Home Props", props);
+    //console.log("Home Props", props);
     super();
 
     this.state = {
       novoTweet: '',
-      tweets: []
+      tweets: [],
+      tweetAtivo: {}
     }
-    
-
 
   }
 
-  componentDidMount(){
+  componentDidMount() {
     fetch(`http://localhost:3001/tweets?X-AUTH-TOKEN=${localStorage.getItem('token')}`)
-    .then(res => res.json())
-    .then(tweetServer => this.setState({tweets: tweetServer}));
+      .then(res => res.json())
+      .then(tweetServer => this.setState({tweets: tweetServer}));
+  }
+
+  removeTweet = (idDoTweet) => {
+    /* Tweet sera removido primeiro do servidor */
+    fetch(`http://localhost:3001/tweets/${idDoTweet}?X-AUTH-TOKEN=${localStorage.getItem('token')}`, {method: 'DELETE'})
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * Se o id do tweet do estado (this.state.tweets) atual for      *
+    * diferente do id passado pela função, ele continua na lista.   *
+    * O idDoTweet que for igual não sera incluido no novo array,    *
+    * por isso será removido.                                       *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        const tweetsAtualizados = this
+          .state
+          .tweets
+          .filter((tweetAtual) => tweetAtual._id !== idDoTweet);
+
+        /*  O estado é atualizado com os tweets que passaram no filtro,
+            assim atualizando o estado e a página                   */
+
+        this.setState({tweets: tweetsAtualizados})
+      })
+
   }
 
   adicionaTweet = (e) => {
@@ -44,8 +68,19 @@ class Home extends Component {
           ],
           novoTweet: ''
         }))
-
     }
+  }
+
+  abreModalParaTweet = (idDoTweetQueVaiNoModal) => {
+
+    console.log('idDoTweet', idDoTweetQueVaiNoModal);
+
+    const tweetSelecionado = this
+      .state
+      .tweets
+      .find((tweetAtual) => tweetAtual._id === idDoTweetQueVaiNoModal)
+    this.setState({tweetAtivo: tweetSelecionado})
+
   }
 
   render() {
@@ -98,12 +133,28 @@ class Home extends Component {
                 {this
                   .state
                   .tweets
-                  .map((tweetInfo, i) => <Tweet key={tweetInfo._id} tweetInfo={tweetInfo} texto={tweetInfo.conteudo}/>)}
+                  .map((tweetInfo, i) =>
+                   <Tweet 
+                   key={tweetInfo._id} 
+                   tweetInfo={tweetInfo} 
+                   texto={tweetInfo.conteudo} 
+                  //Passando função e parametro para o componente filho <Tweet />
+                  removeHandler={() => {this.removeTweet(tweetInfo._id)}} 
+                  handleModal={() => {this.abreModalParaTweet(tweetInfo._id)}}
+                  />)
+                }
               </div>
             </Widget>
           </Dashboard>
 
         </div>
+        {
+        this.state.tweetAtivo._id && 
+        <Tweet
+          removeHandler={() => this.removeTweet(this.state.tweetAtivo._id)}
+          text={this.state.tweetAtivo.conteudo}
+          tweetInfo={this.state.tweetAtivo} />
+        }
       </Fragment>
     );
   }

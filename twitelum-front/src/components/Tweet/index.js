@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './tweet.css'
+import PropTypes from 'prop-types'
 
 class Tweet extends Component {
   constructor(props) {
@@ -10,9 +11,26 @@ class Tweet extends Component {
       totalLikes: props.tweetInfo.totalLikes
     }
   }
+
+  handleLike = (ID) => {  
+    console.log('botao like');
+    console.log(ID);
+    const {likeado, totalLikes} = this.state;
+
+    this.setState({
+      likeado: !likeado,
+      totalLikes: likeado
+        ? totalLikes - 1
+        : totalLikes + 1
+    })
+    fetch(`http://localhost:3001/tweets/${ID}/like/?X-AUTH-TOKEN=${localStorage.getItem('token')}`, {method: 'POST'})
+      .then(res => res.json())
+      .then(res => console.log(res));
+  }
+
   render() {
     return (
-      <article className="tweet">
+      <article className="tweet" onClick={this.props.handleModal}>
         <div className="tweet__cabecalho">
           <img
             className="tweet__fotoUsuario"
@@ -25,7 +43,9 @@ class Tweet extends Component {
         </div>
         <p className="tweet__conteudo">{this.props.texto}</p>
         <footer className="tweet__footer">
-          <button className="btn btn--clean">
+          <button
+            className="btnTweet btn btn--clean"
+            onClick={(e) => {this.handleLike(this.props.tweetInfo._id)}}>
             <svg
               className={`icon icon--small iconHeart ${this.state.likeado
               ? 'iconHeart--active'
@@ -43,11 +63,39 @@ class Tweet extends Component {
               </g>
             </svg>
             {this.state.totalLikes}
-          </button>
+          </button >
+            {
+              this.props.tweetInfo.removivel &&
+              <button 
+              className="btn btn--blue btn--remove"
+              //Recebendo função do componente <Home />
+              onClick={this.props.removeHandler}
+              >X</button>
+            }
         </footer>
       </article>
     )
   }
 }
 
+// Tweet.propTypes = {
+//   removeHandler : PropTypes.func.isRequired,
+//   texto: PropTypes.string.isRequired,
+
+//   tweetInfo: PropTypes.shape({
+
+//     _id: PropTypes.string.isRequired,
+//     likeado: PropTypes.bool.isRequired,
+//     totalLikes: PropTypes.number.isRequired,
+//     removivel: PropTypes.bool,
+
+//     usuario: PropTypes.shape({
+
+//       foto: PropTypes.string.isRequired,
+//       login: PropTypes.string.isRequired,
+//       nome: PropTypes.string.isRequired
+
+//     }).isRequired
+//   }).isRequired
+// }
 export default Tweet

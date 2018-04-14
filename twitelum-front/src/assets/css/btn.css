@@ -4,8 +4,13 @@
   display: inline-flex;
   justify-content: center;
   align-items: flex-end;
+  transition: transform 200ms ease;
+  
 }
-.btn--clean {
+.btnTweet:active{
+  transform: scale(1.5);
+}
+.btn--clean { 
   border: 0;
   background: none;
 }

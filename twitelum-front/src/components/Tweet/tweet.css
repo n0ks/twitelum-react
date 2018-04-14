@@ -61,3 +61,7 @@
 .tweet__footer {
   margin-top: 10px;
 }
+
+.btnTweet {
+  cursor: pointer;
+}
