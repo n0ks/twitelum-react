@@ -3,6 +3,7 @@ import {Switch, Route, Redirect} from 'react-router-dom';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 
+
 function estaAutenticado() {
   if (localStorage.getItem('token')) 
     return true

@@ -31,7 +31,7 @@ class Tweet extends Component {
   render() {
     return (
       <article className="tweet" onClick={this.props.handleModal}>
-        <div className="tweet__cabecalho">
+        <div className="tweet__cabecalho ignoraModal">
           <img
             className="tweet__fotoUsuario"
             src={this.props.tweetInfo.usuario.foto}
@@ -42,7 +42,7 @@ class Tweet extends Component {
           </a>
         </div>
         <p className="tweet__conteudo">{this.props.texto}</p>
-        <footer className="tweet__footer">
+        <footer className="tweet__footer ignoraModal">
           <button
             className="btnTweet btn btn--clean"
             onClick={(e) => {this.handleLike(this.props.tweetInfo._id)}}>
@@ -78,24 +78,24 @@ class Tweet extends Component {
   }
 }
 
-// Tweet.propTypes = {
-//   removeHandler : PropTypes.func.isRequired,
-//   texto: PropTypes.string.isRequired,
+Tweet.propTypes = {
+  removeHandler : PropTypes.func.isRequired,
+  texto: PropTypes.string.isRequired,
 
-//   tweetInfo: PropTypes.shape({
+  tweetInfo: PropTypes.shape({
 
-//     _id: PropTypes.string.isRequired,
-//     likeado: PropTypes.bool.isRequired,
-//     totalLikes: PropTypes.number.isRequired,
-//     removivel: PropTypes.bool,
+    _id: PropTypes.string.isRequired,
+    likeado: PropTypes.bool.isRequired,
+    totalLikes: PropTypes.number.isRequired,
+    removivel: PropTypes.bool,
 
-//     usuario: PropTypes.shape({
+    usuario: PropTypes.shape({
 
-//       foto: PropTypes.string.isRequired,
-//       login: PropTypes.string.isRequired,
-//       nome: PropTypes.string.isRequired
+      foto: PropTypes.string.isRequired,
+      login: PropTypes.string.isRequired,
+      nome: PropTypes.string.isRequired
 
-//     }).isRequired
-//   }).isRequired
-// }
+    }).isRequired
+  }).isRequired
+}
 export default Tweet

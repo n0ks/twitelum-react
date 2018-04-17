@@ -5,24 +5,38 @@ import Dashboard from '../../components/Dashboard'
 import Widget from '../../components/Widget'
 import TrendsArea from '../../components/TrendsArea'
 import Tweet from '../../components/Tweet'
+import Modal from '../../components/Modal'
+import PropTypes from 'prop-types'
 
 class Home extends Component {
+  static contextTypes ={
+    store:PropTypes.object.isRequired
+  }
   constructor(props) {
     //console.log("Home Props", props);
     super();
 
     this.state = {
       novoTweet: '',
-      tweets: [],
+      tweets: [], 
       tweetAtivo: {}
     }
 
   }
-
+  componentWillMount(){
+    this.context.store.subscribe(()=> {
+      this.setState({
+        tweets: this.context.store.getState()
+      })
+    })
+  }
   componentDidMount() {
     fetch(`http://localhost:3001/tweets?X-AUTH-TOKEN=${localStorage.getItem('token')}`)
       .then(res => res.json())
-      .then(tweetServer => this.setState({tweets: tweetServer}));
+      .then(tweetsDoServidor => {
+
+        this.context.store.dispatch({type:'CARREGA_TWEETS', tweets: tweetsDoServidor})
+      });
   }
 
   removeTweet = (idDoTweet) => {
@@ -31,7 +45,7 @@ class Home extends Component {
       .then(res => res.json())
       .then(res => {
         console.log(res);
-        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     * Se o id do tweet do estado (this.state.tweets) atual for      *
     * diferente do id passado pela função, ele continua na lista.   *
     * O idDoTweet que for igual não sera incluido no novo array,    *
@@ -45,9 +59,8 @@ class Home extends Component {
         /*  O estado é atualizado com os tweets que passaram no filtro,
             assim atualizando o estado e a página                   */
 
-        this.setState({tweets: tweetsAtualizados})
+        this.setState({tweets: tweetsAtualizados,tweetAtivo :{}})
       })
-
   }
 
   adicionaTweet = (e) => {
@@ -71,16 +84,31 @@ class Home extends Component {
     }
   }
 
-  abreModalParaTweet = (idDoTweetQueVaiNoModal) => {
+  abreModalParaTweet = (idDoTweetQueVaiNoModal, e) => {
+    
+    const ignoraModal = e.target.closest('.ignoraModal')
+    
+    if(!ignoraModal){
 
-    console.log('idDoTweet', idDoTweetQueVaiNoModal);
+      const tweetSelecionado = this
+        .state
+        .tweets
+        .find((tweetAtual) => tweetAtual._id === idDoTweetQueVaiNoModal)
+      this.setState({tweetAtivo: tweetSelecionado})
 
-    const tweetSelecionado = this
-      .state
-      .tweets
-      .find((tweetAtual) => tweetAtual._id === idDoTweetQueVaiNoModal)
-    this.setState({tweetAtivo: tweetSelecionado})
+    }
+  }
 
+  fechaModal = (e) => {
+
+   const isModal = e.target.classList.contains('modal')
+   
+   if(isModal){
+     this.setState({
+       tweetAtivo :{}
+     })
+   }
+    console.log('teste fecha modal', e.target);
   }
 
   render() {
@@ -140,7 +168,7 @@ class Home extends Component {
                    texto={tweetInfo.conteudo} 
                   //Passando função e parametro para o componente filho <Tweet />
                   removeHandler={() => {this.removeTweet(tweetInfo._id)}} 
-                  handleModal={() => {this.abreModalParaTweet(tweetInfo._id)}}
+                  handleModal={(e) => {this.abreModalParaTweet(tweetInfo._id, e)}}
                   />)
                 }
               </div>
@@ -150,10 +178,15 @@ class Home extends Component {
         </div>
         {
         this.state.tweetAtivo._id && 
-        <Tweet
-          removeHandler={() => this.removeTweet(this.state.tweetAtivo._id)}
-          text={this.state.tweetAtivo.conteudo}
-          tweetInfo={this.state.tweetAtivo} />
+        
+          <Modal isAberto={this.state.tweetAtivo._id} fechaModal={this.fechaModal}>
+            <Widget>
+              <Tweet
+                removeHandler={() => {this.removeTweet(this.state.tweetAtivo._id)}}
+                texto={this.state.tweetAtivo.conteudo}
+                tweetInfo={this.state.tweetAtivo} />
+            </Widget>
+          </Modal>
         }
       </Fragment>
     );

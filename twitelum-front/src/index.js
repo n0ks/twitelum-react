@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 // CSS Global
 import './assets/css/reset.css'
@@ -11,7 +11,8 @@ import './assets/css/notificacao.css'
 
 import './assets/css/novoTweet.css'
 // import './index.css';
-
+import {Provider} from 'react-redux'
+import store from './store'
 
 //Config roteamento
 import {BrowserRouter} from 'react-router-dom';
@@ -19,9 +20,11 @@ import registerServiceWorker from './registerServiceWorker';
 import Routes from './routes';
 
 ReactDOM.render(
-    <BrowserRouter>
-      <Routes />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </Provider>
   
   , document.getElementById('root'));
 registerServiceWorker();
