@@ -78,7 +78,7 @@ class Tweet extends Component {
   }
 }
 
-Tweet.propTypes = {
+/* Tweet.propTypes = {
   removeHandler : PropTypes.func.isRequired,
   texto: PropTypes.string.isRequired,
 
@@ -97,5 +97,6 @@ Tweet.propTypes = {
 
     }).isRequired
   }).isRequired
-}
+} */
+
 export default Tweet

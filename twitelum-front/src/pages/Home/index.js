@@ -4,9 +4,10 @@ import NavMenu from '../../components/NavMenu'
 import Dashboard from '../../components/Dashboard'
 import Widget from '../../components/Widget'
 import TrendsArea from '../../components/TrendsArea'
-import Tweet from '../../components/Tweet'
+import Tweet from '../../containers/TweetPadrao'
 import Modal from '../../components/Modal'
 import PropTypes from 'prop-types'
+import * as TweetsAPI from '../../apis/TweetsAPI'
 
 class Home extends Component {
   static contextTypes ={
@@ -15,7 +16,6 @@ class Home extends Component {
   constructor(props) {
     //console.log("Home Props", props);
     super();
-
     this.state = {
       novoTweet: '',
       tweets: [], 
@@ -31,71 +31,39 @@ class Home extends Component {
     })
   }
   componentDidMount() {
-    fetch(`http://localhost:3001/tweets?X-AUTH-TOKEN=${localStorage.getItem('token')}`)
-      .then(res => res.json())
-      .then(tweetsDoServidor => {
-
-        this.context.store.dispatch({type:'CARREGA_TWEETS', tweets: tweetsDoServidor})
-      });
+    this.context.store.dispatch(TweetsAPI.carrega());
+    console.log('Did Mount');
   }
 
-  removeTweet = (idDoTweet) => {
-    /* Tweet sera removido primeiro do servidor */
-    fetch(`http://localhost:3001/tweets/${idDoTweet}?X-AUTH-TOKEN=${localStorage.getItem('token')}`, {method: 'DELETE'})
-      .then(res => res.json())
-      .then(res => {
-        console.log(res);
-    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    * Se o id do tweet do estado (this.state.tweets) atual for      *
-    * diferente do id passado pela função, ele continua na lista.   *
-    * O idDoTweet que for igual não sera incluido no novo array,    *
-    * por isso será removido.                                       *
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        const tweetsAtualizados = this
-          .state
-          .tweets
-          .filter((tweetAtual) => tweetAtual._id !== idDoTweet);
-
-        /*  O estado é atualizado com os tweets que passaram no filtro,
-            assim atualizando o estado e a página                   */
-
-        this.setState({tweets: tweetsAtualizados,tweetAtivo :{}})
-      })
-  }
+ /*  removeTweet = (idDoTweet) => {
+    this.context.store.dispatch(TweetsAPI.remove(idDoTweet))
+    this.setState({tweetAtivo : {}})
+  } */
 
   adicionaTweet = (e) => {
+
     e.preventDefault()
     const novoTweet = this.state.novoTweet;
-    if (novoTweet) {
-
-      const token = localStorage.getItem('token');
-
-      fetch(`http://localhost:3001/tweets?X-AUTH-TOKEN=${token}`, {
-          method: 'POST',
-          body: JSON.stringify({conteudo: novoTweet})
-        })
-        .then(res => res.json())
-        .then(novoTweetServer => this.setState({
-          tweets: [
-            novoTweetServer, ...this.state.tweets
-          ],
-          novoTweet: ''
-        }))
-    }
+    this
+      .context
+      .store
+      .dispatch(TweetsAPI.adiciona(novoTweet));
+    
+    this.setState({novoTweet: ''})
   }
+
 
   abreModalParaTweet = (idDoTweetQueVaiNoModal, e) => {
     
     const ignoraModal = e.target.closest('.ignoraModal')
     
-    if(!ignoraModal){
-
+    if(!ignoraModal) {
       const tweetSelecionado = this
         .state
         .tweets
         .find((tweetAtual) => tweetAtual._id === idDoTweetQueVaiNoModal)
-      this.setState({tweetAtivo: tweetSelecionado})
 
+      this.setState({tweetAtivo: tweetSelecionado})
     }
   }
 
