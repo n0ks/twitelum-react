@@ -1,6 +1,7 @@
 /* iconHeart */
 .iconHeart {
   fill: #cccccc;
+  position: relative;
 }
 .iconHeart--active {
   fill: #be1931;

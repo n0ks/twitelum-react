@@ -19,7 +19,7 @@
 .tweet__no-tweet {
   font-size: 1.3rem;
   text-align: center;
-  padding: 1.5em;
+  padding: .375em;
   background-image: linear-gradient(to right bottom, #00b2ff, #0084bd);
   margin-bottom: 1rem;
   box-shadow: 0px 1.5rem .75rem rgba(0, 0, 0, .1);
@@ -65,3 +65,4 @@
 .btnTweet {
   cursor: pointer;
 }
+

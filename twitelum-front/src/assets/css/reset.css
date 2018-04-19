@@ -28,7 +28,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background: #c0deed;
+  background-image: linear-gradient(to bottom, #30cfd0 0%, #330867 100%);
 }
 
 [disabled],

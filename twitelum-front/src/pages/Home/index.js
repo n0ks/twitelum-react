@@ -26,7 +26,8 @@ class Home extends Component {
   componentWillMount(){
     this.context.store.subscribe(()=> {
       this.setState({
-        tweets: this.context.store.getState()
+        tweets: this.context.store.getState().tweets.lista,
+        tweetAtivo : this.context.store.getState().tweets.tweetAtivo
       })
     })
   }
@@ -58,12 +59,8 @@ class Home extends Component {
     const ignoraModal = e.target.closest('.ignoraModal')
     
     if(!ignoraModal) {
-      const tweetSelecionado = this
-        .state
-        .tweets
-        .find((tweetAtual) => tweetAtual._id === idDoTweetQueVaiNoModal)
-
-      this.setState({tweetAtivo: tweetSelecionado})
+      this.context.store.dispatch({type: 'ADD_TWEET_ATIVO', idDoTweetQueVaiNoModal})
+      /* his.setState({tweetAtivo: tweetSelecionado}) */
     }
   }
 
@@ -72,11 +69,11 @@ class Home extends Component {
    const isModal = e.target.classList.contains('modal')
    
    if(isModal){
-     this.setState({
+     this.context.store.dispatch({type:'REMOVE_TWEET_ATIVO'})
+    /*this.setState({
        tweetAtivo :{}
-     })
+     }) */
    }
-    console.log('teste fecha modal', e.target);
   }
 
   render() {
@@ -144,6 +141,8 @@ class Home extends Component {
           </Dashboard>
 
         </div>
+       
+        
         {
         this.state.tweetAtivo._id && 
         
@@ -155,6 +154,15 @@ class Home extends Component {
                 tweetInfo={this.state.tweetAtivo} />
             </Widget>
           </Modal>
+        }
+
+        {
+         this.context.store.getState().notificacao &&             
+          <div 
+          className="notificacaoMsg"  
+          onAnimationEnd={() => this.context.store.dispatch({type: 'REMOVE_NOTIFICACAO'})}>
+          {this.context.store.getState().notificacao}
+          </div>
         }
       </Fragment>
     );

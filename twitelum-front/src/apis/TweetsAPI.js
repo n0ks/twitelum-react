@@ -36,7 +36,16 @@ export const remove = (idDoTweet) => {
       .then(res => res.json())
       .then(res => {
         dispatch({type: 'REMOVE_TWEET', idDoTweet: idDoTweet})
+        //dispatch({type:'REMOVE_TWEET_ATIVO'})
 
       })
+  }
+}
+
+export const like = (idDoTweet) => {
+  return (dispatch) => {
+    dispatch({type: 'LIKE', idDoTweet})
+    dispatch({type: 'ADD_NOTIFICACAO', msg: 'LAIKE'})
+
   }
 }
